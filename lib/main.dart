@@ -166,14 +166,11 @@ class _MyHomePageState extends State<MyHomePage>
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
                                 Column(children: <Widget>[
-                                  Container(
-                                      width: 72.0,
-                                      height: 32.0,
-                                      child: animationBuilder(
+                                   animationBuilder(
                                           _animationController,
                                           _status,
                                           checkAnimationType(
-                                              forecast.tomorrowTemperature))),
+                                              forecast.tomorrowTemperature)),
                                   Text('${forecast.tomorrowTemperature} C',
                                       textAlign: TextAlign.start,
                                       style: TextStyle(fontSize: 14)),
@@ -275,7 +272,10 @@ Widget animationBuilder(
   if (animationType == 1) {
     return RotationTransition(
       turns: animationController,
-      child: SizeTransition(
+      child: Container(
+        width: 72.0,
+        height: 32.0,
+        child: SizeTransition(
           sizeFactor: animationController,
           axis: Axis.vertical,
           axisAlignment: 1,
@@ -286,7 +286,7 @@ Widget animationBuilder(
                 color: Colors.lightBlue,
                 size: 16.0,
               ))),
-    );
+    ));
   } else if (animationType == 2) {
     Size size = new Size(24, 24);
     return SlideTransition(
