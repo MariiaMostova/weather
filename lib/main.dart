@@ -115,17 +115,6 @@ class _MyHomePageState extends State<MyHomePage>
             )),
         Padding(
             padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
-            child: FlatButton(
-                child: Text('Turn on animation'),
-                color: Colors.blue,
-                textColor: Colors.white,
-                onPressed: () {
-                  setState(() {
-                    _status = !_status;
-                  });
-                })),
-        Padding(
-            padding: EdgeInsets.fromLTRB(16.0, 0, 16.0, 0),
             child: Divider(
               color: Color(0xAA1976D2),
             )),
@@ -284,69 +273,49 @@ Future<Forecast> getForecast(City city) async {
 Widget animationBuilder(
     AnimationController animationController, bool status, int animationType) {
   if (animationType == 1) {
-    return AnimatedOpacity(
-        opacity: status ? 1.0 : 0.3,
-        duration: Duration(milliseconds: 500),
-        child: AnimatedContainer(
-            duration: Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-            width: status ? 72.0 : 32.0,
-            height: status ? 32.0 : 32.0,
-            alignment: status
-                ? Alignment.topCenter
-                : AlignmentDirectional.bottomCenter,
-            child: Icon(
-              Icons.ac_unit,
-              color: Colors.blue,
-              size: status ? 24.0 : 12.0,
-            )));
+    return RotationTransition(
+      turns: animationController,
+      child: SizeTransition(
+          sizeFactor: animationController,
+          axis: Axis.vertical,
+          axisAlignment: 1,
+          child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Icon(
+                Icons.ac_unit,
+                color: Colors.lightBlue,
+                size: 16.0,
+              ))),
+    );
   } else if (animationType == 2) {
-    return AnimatedOpacity(
-        opacity: status ? 1.0 : 0.7,
-        duration: Duration(milliseconds: 500),
-        child: AnimatedContainer(
-            duration: Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-            width: status ? 72.0 : 32.0,
-            height: status ? 32.0 : 32.0,
-            alignment:
-                status ? Alignment.topLeft : AlignmentDirectional.bottomCenter,
-            child: status
-                ? SvgPicture.asset(
-                    'assets/icons/clouds.svg',
-                    height: 28.0,
-                    width: 28.0,
-                    allowDrawingOutsideViewBox: true,
-                  )
-                : SvgPicture.asset(
-                    'assets/icons/rain.svg',
-                    height: 24.0,
-                    width: 24.0,
-                    allowDrawingOutsideViewBox: true,
-                  )));
+    Size size = new Size(24, 24);
+    return SlideTransition(
+        position: Tween<Offset>(
+          begin: Offset.zero,
+          end: const Offset(0.2, 0.0),
+        ).animate(CurvedAnimation(
+          parent: animationController,
+          curve: Curves.elasticIn,
+        )),
+        child: ScaleTransition(
+            scale: animationController,
+            child: Icon(
+              Icons.cloud,
+              size: 32.0,
+              color: Colors.blueAccent,
+            )));
   } else {
-    return AnimatedOpacity(
-        opacity: status ? 0.5 : 1.0,
-        duration: Duration(milliseconds: 500),
-        child: AnimatedContainer(
-            duration: Duration(milliseconds: 500),
-            curve: Curves.easeIn,
-            width: status ? 72.0 : 32.0,
-            height: status ? 32.0 : 32.0,
-            alignment:
-                status ? Alignment.topLeft : AlignmentDirectional.bottomCenter,
-            child: status
-                ? SvgPicture.asset(
-                    'assets/icons/sun_cloud.svg',
-                    height: 32.0,
-                    width: 32.0,
-                    allowDrawingOutsideViewBox: true,
-                  )
-                : SvgPicture.asset(
-                    'assets/icons/sun.svg',
-                    height: 24.0,
-                    width: 24.0,
-                    allowDrawingOutsideViewBox: true,
-                  )));
+    return SizeTransition(
+      sizeFactor: animationController,
+      axis: Axis.horizontal,
+      axisAlignment: 1,
+      child: RotationTransition(
+          turns: animationController,
+          child: Icon(
+            Icons.wb_sunny,
+            color: Colors.amber,
+            size: 32.0,
+          )),
+    );
   }
 }
